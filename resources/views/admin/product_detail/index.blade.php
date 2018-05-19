@@ -110,6 +110,22 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="showImage">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Show Image</h4>
+			</div>
+			<div class="modal-body">
+				<div id="gallery"></div>
+			</div>
+			<div style="clear: both" class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -225,6 +241,22 @@
 				}
 			});
 		})
+		$(document).on('click','.btn-info', function (e){
+			$('#showImage').modal('show');
+			var id = $(this).attr('showImage');
+			$.ajax({
+				type: 'get',
+				url: '{{asset("")}}admin/product_detail/showImage/' + id,
+				success: function(response){
+					console.log(response);
+					$('#gallery').html("");
+					for(var i=0;i<response.length;i++)
+					{
+						$('#gallery').append("<img class='suaAnh' src='http://projectla02.com/storage/"+response[i].image+"'>");
+					}
+				}
+			})
+		});
 		$(document).on('click', '.btn-success', function() {
 			$('#editP').modal('show');
 

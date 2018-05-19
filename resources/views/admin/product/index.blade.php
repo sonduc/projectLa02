@@ -19,8 +19,7 @@
 	</thead>
 	<tbody id="product">
 		<tr>
-			<td id="image">
-				
+			<td id="product">				
 			</td>
 		</tr>
 	</tbody>
@@ -66,7 +65,6 @@
 		</div>
 	</div>
 </div>
-
 <div class="modal fade" id="editP">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
@@ -111,10 +109,77 @@
 		</div>
 	</div>
 </div>
+
+<div class="modal fade" id="showDetail">
+	<div class="modal-dialog" style="width: 1050px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Chi tiết sản phẩm</h4>
+			</div>
+			<div class="modal-body">
+				<table class="table table-bordered" style="float: left;" id="product_detail-table">
+					<thead>
+						<tr>
+							<th class="white">ID</th>
+							<th class="white">Số lượng</th>
+							<th class="white">Màu sắc</th>
+							<th class="white">Kích cỡ</th>
+							<th class="white">Sản phẩm</th>
+							<th class="white">Action</th>
+						</tr>
+					</thead>
+					<tbody id=""></tbody>					
+				</table>
+				<hr style="width:80%;color:gray;float: left;margin-left: 10%">
+				<div style="float:left; width:100%">
+					<form id="add_new_detail" method="POST" role="form" style="float: left;width:100%;">
+						{{csrf_field()}}
+						<input type="hidden" name="" id="getIdProduct">
+						<div style="width:8%;float: left;margin-left: 15px" class="form-group">
+							<label for="">Số lượng:</label>
+							<input type="number" class="form-control" id="quantity" name="quantity" placeholder="Nhập">
+						</div>
+						<div style="width:8%;float: left;margin-left: 15px" class="form-group">
+							<label >Màu:</label>
+							<select name="" class="form-control" id="color_id">
+								@foreach ($color as $value)
+								<option value="{{$value->id}}">{{ $value->color_name }}</option>
+								@endforeach	
+							</select>
+						</div>
+						<div style="width:8%;float: left;margin-left: 15px" class="form-group">
+							<label >Kích cỡ:</label>
+							<select name="" class="form-control" id="size_id">
+								@foreach ($size as $value)
+								<option value="{{$value->id}}">{{ $value->size }}</option>
+								@endforeach	
+							</select>
+						</div>
+						<div style="width:27%;float: left;margin-left: 15px" class="form-group">
+							<label for="">Hình</label>
+							<input type="file" class="form-control" name="image[]" id="image" multiple >
+						</div>
+						<button style="float: left;margin-top: 25px;margin-left: 23px;" type="submit" class="btn btn-primary">Thêm</button>
+					</form>
+					<div style="float: left;width: 100%;" id="gallery"></div>
+				</div>		
+			</div>
+			<div style="clear: both;" class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 @endsection
 @section('script')
 <script type="text/javascript">
 	$(function() {
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+			}
+		});		
 		var userTable = $('#users-table').DataTable({
 			language: {
 				"decimal":        "",
@@ -156,11 +221,67 @@
 			{ data: 'action', name: 'action' },
 			]
 		});
-		$.ajaxSetup({
-			headers: {
-				'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+		$(document).on('click', '.btn-warning', function(){
+			$('#showDetail').modal('show');
+			var id = $(this).attr('show');			
+			$('#getIdProduct').val(id);
+
+			var detailTable = $('#product_detail-table').DataTable({
+				processing: true,
+				order : [[ 0, 'desc' ]],
+				ordering: true,
+				serverSide: true,
+				destroy: true,
+				ajax: '{{asset("")}}admin/product/showDetail/' + id,
+				columns: [
+				{ data: 'id', name: 'product_details.id' },
+				{ data: 'quantity', name: 'product_details.quantity' },
+				{ data: 'color_name', name: 'colors.color_name' },
+				{ data: 'size', name: 'sizes.size' },
+				{ data: 'product_name', name: 'products.name' },
+				{ data: 'action', name: 'action' },
+				]
+			});
+		});
+		$("#image").change(function(){
+			$('#gallery').html("");
+			var total_file=document.getElementById("image").files.length;
+			for(var i=0;i<total_file;i++)
+			{
+				$('#gallery').append("<img class='suaAnh' src='"+URL.createObjectURL(event.target.files[i])+"'>");
 			}
 		});
+		$('#add_new_detail').on('submit',function(e){
+			e.preventDefault();			
+			var newPost = new FormData();
+			var files = document.getElementById('image').files;	
+			for (var i = 0; i < files.length; i++) {
+				newPost.append('image[]',files[i]);
+			}
+			//console.log($('#quantity').val());
+			newPost.append('quantity',$('#quantity').val());
+			newPost.append('color_id',$('#color_id').val());
+			newPost.append('size_id',$('#size_id').val());
+			newPost.append('product_id',$('#getIdProduct').val());
+			$.ajax({				
+				type: 'post',
+				url: '{{asset('admin/product/storeDetail')}}',
+				dataType:'json',
+				data: newPost,
+				async:false,
+				processData: false,
+				contentType: false,
+				success: function (response){
+					console.log(response);
+					toastr.success('Thêm thành công!');					
+					//detailTable.ajax.reload();
+				},
+				error: function (error) {
+					//500
+				}
+			})
+		});
+
 		$('#add_new').on('submit',function(e) {
 			e.preventDefault();
 			$.ajax({				

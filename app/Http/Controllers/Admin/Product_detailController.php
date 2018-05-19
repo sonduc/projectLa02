@@ -8,7 +8,9 @@ use Yajra\Datatables\Datatables;
 use App\Color;
 use App\Size;
 use App\Product;
+use App\Image;
 use App\Product_detail;
+use DB;
 
 class Product_detailController extends Controller
 {
@@ -40,6 +42,7 @@ class Product_detailController extends Controller
         return Datatables::of($product_detail)
         ->addColumn('action', function ($product_detail) {
             return'
+            <a showImage="'. $product_detail->id .'" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-picture"></i></a>
             <a edit="'. $product_detail->id .'" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-edit"></i></a>
             <a delete="'. $product_detail->id .'" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
             ';
@@ -107,5 +110,15 @@ class Product_detailController extends Controller
     {
         $size = new Size();
         return response()->json($size->del($id));
+    }
+
+    public function showImage($id)
+    {
+        // $image = Image::all()->where('product_detail_id',$id)->value('name');
+        $image = Image::where('product_detail_id', $id)->get();
+        return $image;
+        // return response()->json([
+        //     'image' => $image
+        // ],200);
     }
 }

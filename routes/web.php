@@ -42,6 +42,8 @@ Route::middleware('admin.auth')->group(function (){
 		Route::prefix('product')->group(function(){
 			Route::get('index', 'Admin\ProductController@index')->name('product.index');
 			Route::get('anyData','Admin\ProductController@anyData')->name('product.anyData');
+			Route::get('showDetail/{id}','Admin\ProductController@showDetail')->name('product.showDetail');
+			Route::post('storeDetail','Admin\ProductController@storeDetail')->name('product.store');
 			Route::post('store','Admin\ProductController@store')->name('product.store');
 			Route::get('edit/{id}','Admin\ProductController@edit')->name('product.edit');
 			Route::post('update/{id}','Admin\ProductController@update')->name('product.update');
@@ -51,6 +53,7 @@ Route::middleware('admin.auth')->group(function (){
 			Route::get('index', 'Admin\Product_detailController@index')->name('product_detail.index');
 			Route::get('anyData','Admin\Product_detailController@anyData')->name('product_detail.anyData');
 			Route::post('store','Admin\Product_detailController@store')->name('product_detail.store');
+			Route::get('showImage/{id}','Admin\Product_detailController@showImage')->name('product_detail.showImage');
 			Route::get('edit/{id}','Admin\Product_detailController@edit')->name('product_detail.edit');
 			Route::post('update/{id}','Admin\Product_detailController@update')->name('product_detail.update');
 			Route::delete('delete/{id}','Admin\Product_detailController@destroy')->name('product_detail.delete');

@@ -44,6 +44,7 @@
 							@endforeach	
 						</select>
 					</div>	
+					<div style="clear: both"></div>
 					<button type="submit" class="btn btn-primary">Thêm</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				</form>
@@ -145,11 +146,13 @@
 		});
 		$('#add_new').on('submit',function(e) {
 			e.preventDefault();
-			var file = $('#image').get(0).files[0];	
 			var newPost = new FormData();
+			var files = document.getElementById('image').files;	
+			for (var i = 0; i < files.length; i++) {
+				newPost.append('image[]',files[i]);
+			}
 			newPost.append('name',$('#name').val());
-			newPost.append('product_detail_id',$('#product_detail_id').val());			
-			newPost.append('image',file);
+			newPost.append('product_detail_id',$('#product_detail_id').val());
 			$.ajax({				
 				type: 'post',
 				url: '{{asset('admin/image/store')}}',
@@ -169,7 +172,6 @@
 					'<td>'+response.id+'</td>'+
 					'<td>'+response.name+'</td>'+
 					'<td>'+response.image+'</td>'+
-					'<td>'+response.product_id+'</td>'+
 					'<td>'+
 					'<a edit="'+ response.id +'" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-edit"></i></a>'+
 					'<a delete="'+ response.id +'" style="margin-left: 3px" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>'+
@@ -224,8 +226,8 @@
 				success: function(response){
 					$('#edit_id').val(response.id);
 					$('#edit_name').val(response.name);	
-					$('#old_image').attr('src','{{asset('')}}upload/image/'+response.image+'');	
 					$('#edit_product_detail_id').val(response.product_detail_id);	
+					$('#old_image').attr('src','{{asset('')}}upload/image/'+response.image+'');	
 				}
 			})
 		});
@@ -234,8 +236,7 @@
 			var id = $('#edit_id').val();
 			var file = $('#edit_image').get(0).files[0];	
 			var newPost = new FormData();
-			newPost.append('name',$('#edit_name').val());
-			newPost.append('product_detail_id',$('#edit_product_detail_id').val());				
+			newPost.append('name',$('#edit_name').val());			
 			newPost.append('image',file);
 			$.ajax({
 				type: 'post',
@@ -254,7 +255,6 @@
 						'<td>'+response.id+'</td>'+
 						'<td>'+response.code+'</td>'+
 						'<td>'+response.color_name+'</td>'+							
-						'<td>'+response.product_id+'</td>'+
 						'<td>'+
 						'<a edit="'+ response.id +'" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-edit"></i></a>'+
 						'<a delete="'+ response.id +'" style="margin-left: 3px" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>'+

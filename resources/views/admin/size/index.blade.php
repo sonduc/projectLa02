@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
-<table class="table table-hover table-bordered" id="users-table">
+<table class="table table-bordered" id="users-table">
 	<p style="text-align: center;color: cornflowerblue;font-size: 50px;">--Size--</p>
 	<button style="margin-bottom: 10px" class="btn btn-primary" data-toggle="modal" href='#add'><i class="glyphicon glyphicon-plus">
 	</i>&nbsp&nbsp Thêm mới</button>

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
-<table class="table table-hover table-bordered" id="users-table">
+<table class="table table-bordered" id="users-table">
 	<p style="text-align: center;color: cornflowerblue;font-size: 50px;">--Màu sắc--</p>
 	<button style="margin-bottom: 10px" class="btn btn-primary" data-toggle="modal" href='#add'><i class="glyphicon glyphicon-plus">
 	</i>&nbsp&nbsp Thêm mới</button>
@@ -27,7 +27,7 @@
 					{{csrf_field()}}
 					<div class="form-group">
 						<label for="">Mã màu:</label>
-						<input type="color" class="form-control" id="code" name="code" placeholder="Nhập">
+						<input style="width: 55px;height: 28px;padding: 1px" type="color" class="form-control" id="code" name="code" placeholder="Nhập">
 					</div>
 					<div class="form-group">
 						<label for="">Tên sắc màu:</label>
@@ -54,7 +54,7 @@
 					<input type="hidden" name="" id="edit_id">
 					<div class="form-group">
 						<label for="">Mã màu:</label>
-						<input type="color" class="form-control" id="edit_code" name="edit_code" placeholder="Nhập">
+						<input style="width: 55px;height: 28px;padding: 1px" type="color" class="form-control" id="edit_code" name="edit_code" placeholder="Nhập">
 					</div>
 					<div class="form-group">
 						<label for="">Tên sắc màu:</label>

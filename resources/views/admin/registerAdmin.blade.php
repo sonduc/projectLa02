@@ -1,8 +1,21 @@
 @extends('layouts.master')
 
 @section('content')
-<form  method="POST" action="{{ route('admin.post.login') }}" class="login100-form validate-form p-b-33 p-t-5">
+<form  method="POST" action="{{ route('admin.register') }}" class="login100-form validate-form p-b-33 p-t-5">
 	@csrf
+	<div class="form-group row">
+		<label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+
+		<div class="col-md-6">
+			<input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required autofocus>
+
+			@if ($errors->has('name'))
+			<span class="invalid-feedback">
+				<strong>{{ $errors->first('name') }}</strong>
+			</span>
+			@endif
+		</div>
+	</div>
 
 	<div class="wrap-input100 validate-input" data-validate = "Enter username">
 		<input class="input100" type="email" name="email" placeholder="Email">
@@ -35,11 +48,6 @@
 			</div>
 		</div>
 	</div>
-
-	{{-- <div class="form-group row">
-		<a id="reg" class="col-md-12 offset-md-12" style="margin-left: 15px;margin-top: 25px;" href="{{ route('admin.register') }}">	Don't have an account? Register
-		</a>
-	</div> --}}
 
 	<div class="container-login100-form-btn m-t-32">
 		<button type="submit" class="login100-form-btn">

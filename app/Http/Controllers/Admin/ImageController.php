@@ -40,7 +40,9 @@ class ImageController extends Controller
         ->setRowClass(function ($image) {
             return $image->id % 2 == 0 ? 'pink' : 'green';
         })
-        ->editColumn('image', '<img class="sizeImage" src="http://projectla02.com/upload/image/{{$image}} "/>')
+        ->editColumn('image', function($image) {
+            return '<img class="sizeImage" src="' .asset('') . 'storage/'. $image->image .'"/>';
+        })
         ->setRowId('tr-{{$id}}')
         ->rawColumns(['image', 'action'])
         ->make(true);
@@ -54,33 +56,19 @@ class ImageController extends Controller
      */
     public function store(Request $request)
     {      
-        //return $request;
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $key => $value) {
-                $imageName = time(). $key . '.' . $value->getClientOriginalExtension();
-                $value->move(public_path('upload/image'), $imageName);
-                $data['name'] = $request['name'];
-                $data['product_detail_id'] = $request['product_detail_id'];
-                $data['image'] = $imageName;   
-                return $data;
-                                         
-            }
-            
-            // $imageName = time().'.'.$request->image->getClientOriginalExtension();
-            // $request->image->move(public_path('upload/image'), $imageName);
-        }else{
-            $request->validate([
-                'name'       => 'required',
-                'product_detail_id'     => 'required',
-            ]);
-            //$imageName='http://localhost:8800/images/posts/userDefault.png';
-        }    
 
-        // $data=$request->all();
-        // unset($data['image']);
-        // $data['image'] = $imageName;
-        // $image= Image::create($data);
-        // return $image;
+        $data = array();
+        $images=array();
+        if($files=$request->file('image')){
+            foreach($files as $key =>$file){
+                $temp = [];
+                $temp['image'] = $file->store('images');
+                $temp['name'] = $request['name'];
+                $temp['product_detail_id'] = $request['product_detail_id'];
+                Image::create($temp);
+            }
+        }
+        return response()->json(['data' => $images], 200);
     }
 
     /**
