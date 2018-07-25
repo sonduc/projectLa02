@@ -32,7 +32,7 @@ class CategoryController extends Controller
             
         })
         ->setRowClass(function ($category) {
-            return $category->id % 2 == 0 ? 'pink' : 'green';
+            return $category->id % 2 == 0 ? 'green' : 'green';
         })
         ->setRowId('tr-{{$id}}')
         ->make(true);
@@ -73,7 +73,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryValidation $request, $id)
     {
         $data['name'] = $request['name'];
         $data['slug'] = str_slug($request['name']);

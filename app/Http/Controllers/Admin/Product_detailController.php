@@ -49,7 +49,7 @@ class Product_detailController extends Controller
             
         })
         ->setRowClass(function ($product_detail) {
-            return $product_detail->id % 2 == 0 ? 'pink' : 'green';
+            return $product_detail->id % 2 == 0 ? 'green' : 'green';
         })
         ->setRowId('tr-{{$id}}')
         ->make(true);
@@ -108,8 +108,8 @@ class Product_detailController extends Controller
      */
     public function destroy($id)
     {
-        $size = new Size();
-        return response()->json($size->del($id));
+        $product_detail = new Product_detail();
+        return response()->json($product_detail->del($id));
     }
 
     public function showImage($id)

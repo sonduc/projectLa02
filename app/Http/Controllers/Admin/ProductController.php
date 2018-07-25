@@ -12,6 +12,8 @@ use App\Image;
 use App\Color;
 use App\Size;
 use DB;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Admin\ProductValidation;
 
 class ProductController extends Controller
 {
@@ -41,14 +43,14 @@ class ProductController extends Controller
         return Datatables::of($products)
         ->addColumn('action', function ($product) {
             return'
-            <a show="'. $product->id .'" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-eye-open"></i></a>
-            <a edit="'. $product->id .'" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-edit"></i></a>
-            <a delete="'. $product->id .'" style="margin-top: 3px" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+            <a show="'. $product->id .'" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-eye-open"></i></a>
+            <a edit="'. $product->id .'" class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i></a>
+            <a delete="'. $product->id .'" class="btn btn-xs btn-danger" id="deleteProduct"><i class="glyphicon glyphicon-remove"></i></a>
             ';
             
         })
         ->setRowClass(function ($product) {
-            return $product->id % 2 == 0 ? 'pink' : 'green';
+            return $product->id % 2 == 0 ? 'green' : 'green';
         })
         ->editColumn('unit_price', '{{ number_format($unit_price)}}')
         ->editColumn('promotion_price', '{{ number_format($promotion_price)}}')
@@ -68,15 +70,20 @@ class ProductController extends Controller
         ->addColumn('action', function ($product_detail) {
             return'
             <a showImage="'. $product_detail->id .'" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-picture"></i></a>
-            <a edit="'. $product_detail->id .'" class="btn btn-sm btn-success"><i class="glyphicon glyphicon-edit"></i></a>
-            <a delete="'. $product_detail->id .'" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+            <a deleteDetail="'. $product_detail->id .'" class="btn btn-sm btn-danger" id="deleteDetailProduct"><i class="glyphicon glyphicon-remove"></i></a>
             ';
         })
         ->setRowClass(function ($product_detail) {
-            return $product_detail->id % 2 == 0 ? 'pink' : 'green';
+            return $product_detail->id % 2 == 0 ? 'green' : 'green';
         })
         ->setRowId('tr-{{$id}}')
         ->make(true);
+    }
+
+    public function showImage($id)
+    {
+        $image = Image::where('product_detail_id', $id)->get();
+        return $image;
     }
 
     public function storeDetail(Request $request)
@@ -88,15 +95,6 @@ class ProductController extends Controller
         $data['size_id'] = $request['size_id'];
         $data['product_id'] = $request['product_id'];
         $productDetail = Product_detail::create($data);
-        // $getId = DB::table('product_details')
-        // // ->where('quantity',$request['quantity'])
-        // ->where('color_id',$request['color_id'])
-        // ->where('size_id',$request['size_id'])
-        // ->where('product_id',$request['product_id'])
-        // ->get()->id;
-        // return $getId;
-        //return $getId;
-        $images=array();
         if($files=$request->file('image')){
             foreach($files as $key =>$file){
                 $temp = [];
@@ -106,15 +104,35 @@ class ProductController extends Controller
                 Image::create($temp);
             }
         }
-        return response()->json(['data' => $images], 200);
+        return response()->json([
+            'data' => $data,
+            'temp' => $temp,          
+        ], 200);
     }
+
+    public function storeImage(Request $request)
+    {      
+        $data = array();
+        if($files=$request->file('image')){
+            foreach($files as $key =>$file){
+                $temp = [];
+                $temp['image'] = $file->store('images');
+                $temp['product_detail_id'] = $request['product_detail_id'];
+                $data[] = Image::create($temp);
+            }
+
+        }
+        return response()->json($data);
+    }
+
+    // get image
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductValidation $request)
     {           
         $data['code'] = "#".time();
         $data['name'] = $request['name'];
@@ -168,5 +186,20 @@ class ProductController extends Controller
     {
         $product = new Product();
         return response()->json($product->del($id));
+    }
+    public function destroyDetailProduct($id)
+    {
+        //$product_detail = new Product_detail();
+        // DB::table('product_details')->find($id)->delete();
+        return DB::table('product_details')->where('id',$id)->delete();
+    }
+    public function destroyImage($id)
+    {
+        //$product_detail = new Product_detail();
+        // DB::table('product_details')->find($id)->delete();
+        $image=DB::table('images')->find($id)->image;
+        Storage::disk('local')->delete('public/'.$image);
+        return DB::table('images')->where('id',$id)->delete();
+
     }
 }

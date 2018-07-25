@@ -10,8 +10,8 @@ class Image extends Model
 	protected $fillable = [
 		'name','image','product_detail_id'
 	];
-	public function ProductDetailImages(){
-        return $this->hasMany('App\ProductDetailImages','product_detail_id','id');
+    public function Product_detail(){
+    	return $this->belongsTo('App\Product_detail','product_detail_id','id');
     }
 	public function del($id){
 		return Image::find($id)->delete();

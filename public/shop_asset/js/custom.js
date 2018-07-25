@@ -1392,22 +1392,14 @@ $j("nav").each(function(){
 });
 function submenuXposition($obj){
  var w_width = window.innerWidth;
- var o_position = $obj.offset().left;
  var o_width = $obj.outerWidth();
- var delta = parseInt(w_width - o_position - o_width - 25);
+
  
- if(delta < 0) {
-  $obj.css("left", delta);
- }
 }
 function submenuYposition($obj){
  var w_height = window.innerHeight;
- var o_position = $j(".stuck-nav").hasClass("fixedbar") ? $obj.position().top : $obj.offset().top;
  var o_height = $obj.outerHeight();
- var delta = parseInt(w_height - o_position - o_height);
- if(delta < 0) {
-  $obj.css({"max-height": o_height + delta - 25, "overflow": "auto"});
- }
+
 }
 function menuScroll(event) {
  event.data.obj.removeAttr("style");

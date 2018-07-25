@@ -32,7 +32,7 @@ class UserController extends Controller
             
         })
         ->setRowClass(function ($user) {
-            return $user->id % 2 == 0 ? 'pink' : 'green';
+            return $user->id % 2 == 0 ? 'green' : 'green';
         })
         ->setRowId('tr-{{$id}}')
         ->make(true);

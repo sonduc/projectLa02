@@ -32,7 +32,7 @@ class SlideController extends Controller
             ';          
         })
         ->setRowClass(function ($slide) {
-            return $slide->id % 2 == 0 ? 'pink' : 'green';
+            return $slide->id % 2 == 0 ? 'green' : 'green';
         })
         ->editColumn('image', '<img class="sizeImage" src="http://projectla02.com/upload/slide/{{$image}} "/>')
         ->setRowId('tr-{{$id}}')

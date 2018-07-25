@@ -10,8 +10,8 @@ class Product_detail extends Model
 	protected $fillable = [
 		'quantity','color_id','size_id','product_id',
 	];
-    public function ProductDetailImages(){
-        return $this->hasMany('App\ProductDetailImages','product_detail_id','id');
+    public function Image(){
+        return $this->hasMany('App\Image','product_detail_id','id');
     }
 	public function Size(){
     	return $this->belongsTo('App\Size','size_id','id');

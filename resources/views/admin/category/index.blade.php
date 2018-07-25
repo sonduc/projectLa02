@@ -135,11 +135,11 @@
 					'</tr>';
 
 					$('#category').prepend(html);
+					document.getElementById("add_new").reset();
 					userTable.ajax.reload();
-
 				},
 				error: function (error) {
-					toastr.success(error.responseJSON.errors.name);
+					toastr.warning(error.responseJSON.errors.name);
 				}
 			})
 		});
@@ -215,7 +215,7 @@
 					userTable.ajax.reload();
 				},
 				error: function (error) {
-					//500
+					toastr.warning(error.responseJSON.errors.name);
 				}
 			})
 		});

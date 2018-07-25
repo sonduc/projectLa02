@@ -13,8 +13,11 @@ class Product extends Model
 	public function Category(){
     	return $this->belongsTo('App\Category','category_id','id');
     }
-    public function Slide(){
-        return $this->hasMany('App\Slides','product_id','id');
+    public function ProductDetail(){
+        return $this->hasMany('App\Product_detail','product_id','id');
+    }
+    public function Image(){
+    	return $this->hasManyThrough('App\Image','App\Product_detail','product_detail_id','product_id','id');
     }
     public function Bill_detail(){
         return $this->hasMany('App\Bill_detail','product_id','id');

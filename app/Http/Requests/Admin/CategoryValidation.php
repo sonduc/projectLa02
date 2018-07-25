@@ -30,8 +30,8 @@ class CategoryValidation extends FormRequest
     public function messages()
     {
         return [
-            'name.required'=>'Name is also required',
-            'name.max'=>'Name has not more than 20 chars',
+            'name.required'=>'Không được để trống!',
+            'name.max'=>'Tên danh mục không được quá 20 kí tự',
         ];
     }
 }

@@ -31,7 +31,7 @@ class SizeController extends Controller
             
         })
         ->setRowClass(function ($size) {
-            return $size->id % 2 == 0 ? 'pink' : 'green';
+            return $size->id % 2 == 0 ? 'green' : 'green';
         })
         ->setRowId('tr-{{$id}}')
         ->make(true);

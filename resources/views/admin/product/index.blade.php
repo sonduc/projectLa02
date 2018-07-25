@@ -8,12 +8,12 @@
 	<thead>
 		<tr>
 			<th class="white">ID</th>
-			<th class="white">Code</th>
-			<th class="white">Name</th>
-			<th class="white">Description</th>
-			<th class="white">Unit_price</th>
-			<th class="white">Promotion_price</th>
-			<th class="white">Category_id</th>
+			<th class="white">Mã</th>
+			<th class="white">Tên sản phẩm</th>
+			<th class="white">Miêu tả</th>
+			<th class="white">Giá bán</th>
+			<th class="white">Giá khuyến mãi</th>
+			<th class="white">Danh mục</th>
 			<th class="white">Action</th>
 		</tr>
 	</thead>
@@ -171,6 +171,34 @@
 		</div>
 	</div>
 </div>
+<div class="modal fade" id="showImage">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Ảnh sản phẩm</h4>
+			</div>
+			<div class="modal-body">
+				<button type="button" id="buttonDelete" class="bt btn-md btn-default">Delete</button>
+				<div id="Detail_image"></div>
+
+				<form id="add_image_new" method="POST" role="form">		
+					@csrf		
+					<div style="float: left;margin-left: 75%" class="form-group">
+						<input type="file" class="form-control inputImage" name="newImage[]" id="newImage" multiple>
+					</div>			
+					<button type="submit" class="buttonImage glyphicon glyphicon-upload"></button>
+					
+				</form>
+				
+				<div id="DsAnh"></div>
+			</div>
+			<div style="clear: both" class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 @endsection
 @section('script')
 <script type="text/javascript">
@@ -221,6 +249,7 @@
 			{ data: 'action', name: 'action' },
 			]
 		});
+
 		$(document).on('click', '.btn-warning', function(){
 			$('#showDetail').modal('show');
 			var id = $(this).attr('show');			
@@ -242,45 +271,181 @@
 				{ data: 'action', name: 'action' },
 				]
 			});
+
+			$("#image").change(function(){
+				$('#gallery').html("");
+				var total_file=document.getElementById("image").files.length;
+				for(var i=0;i<total_file;i++)
+				{
+					$('#gallery').append("<img class='suaAnh' src='"+URL.createObjectURL(event.target.files[i])+"'>");
+				}
+			});
+			$('#add_new_detail').on('submit',function(e){
+				e.preventDefault();			
+				var newPost = new FormData();
+				var files = document.getElementById('image').files;	
+				for (var i = 0; i < files.length; i++) {
+					newPost.append('image[]',files[i]);
+				}
+				//console.log($('#quantity').val());
+				newPost.append('quantity',$('#quantity').val());
+				newPost.append('color_id',$('#color_id').val());
+				newPost.append('size_id',$('#size_id').val());
+				newPost.append('product_id',$('#getIdProduct').val());
+				$.ajax({				
+					type: 'post',
+					url: '{{asset('admin/product/storeDetail')}}',
+					dataType:'json',
+					data: newPost,
+					async:false,
+					processData: false,
+					contentType: false,
+					success: function (response){
+						//console.log(response);
+						toastr.success('Thêm thành công!');								
+						detailTable.ajax.reload();
+						document.getElementById("add_new_detail").reset();
+						$('#gallery').html("");
+						//document.getElementsByClassName("gallery").reset();
+					},
+					error: function (error) {
+						//500
+					}
+				})
+			});
+			$(document).on('click', '#deleteDetailProduct', function (e) {
+				var id = $(this).attr('deleteDetail');
+				e.preventDefault();
+				swal({
+					dangerMode: true,
+					title: "Bạn có muốn xóa viết này không?",
+					icon: "warning",
+					buttons: {
+						cancel: 'Hủy',
+						confirm: 'Xóa'
+					}
+				})
+				.then((willDelete) => {
+					if (willDelete) {
+						$.ajax({
+							type: "delete",
+							url: '{{asset("")}}admin/product/deleteDetail/' + id,
+							success: function(res)
+							{
+								toastr.success('Bài viết đã được xóa!', "");
+								detailTable.ajax.reload();
+								//$('#tr-' + id).remove();
+							},
+							error: function (){
+
+							}
+						});
+					}
+				});
+			})
 		});
-		$("#image").change(function(){
-			$('#gallery').html("");
-			var total_file=document.getElementById("image").files.length;
+
+		var idTest = '';
+		$(document).on('click','.btn-info', function (e){
+			idTest = $(this).attr('showImage');
+			$('#showImage').modal('show');
+			var id = $(this).attr('showImage');
+
+			$.ajax({
+				type: 'get',
+				url: '{{asset("")}}admin/product/showImage/' + id,
+				success: function(response){
+					//console.log(response);
+					$('#Detail_image').html("");
+					for(var i=0;i<response.length;i++)
+					{
+						$('#Detail_image').append(							
+							"<img class='suaAnh' id='anh-"+response[i].id+"' src='http://projectla02.com/storage/"+response[i].image+"'>"+
+							"<i class='glyphicon glyphicon-remove gly_remove' id='icon-"+response[i].id+"' xoaAnh='"+response[i].id+"'></i>"
+							);
+					}
+				}
+			})
+		});
+
+		$("#newImage").change(function(){
+			$('#DsAnh').html("");
+			var total_file=document.getElementById("newImage").files.length;
 			for(var i=0;i<total_file;i++)
 			{
-				$('#gallery').append("<img class='suaAnh' src='"+URL.createObjectURL(event.target.files[i])+"'>");
+				$('#DsAnh').append("<img class='suaAnh2' src='"+URL.createObjectURL(event.target.files[i])+"'>");
 			}
 		});
-		$('#add_new_detail').on('submit',function(e){
+		$('#add_image_new').on('submit', function(e) {
 			e.preventDefault();			
 			var newPost = new FormData();
-			var files = document.getElementById('image').files;	
+			var files = document.getElementById('newImage').files;	
 			for (var i = 0; i < files.length; i++) {
 				newPost.append('image[]',files[i]);
 			}
-			//console.log($('#quantity').val());
-			newPost.append('quantity',$('#quantity').val());
-			newPost.append('color_id',$('#color_id').val());
-			newPost.append('size_id',$('#size_id').val());
-			newPost.append('product_id',$('#getIdProduct').val());
+			newPost.append('product_detail_id',idTest);
 			$.ajax({				
 				type: 'post',
-				url: '{{asset('admin/product/storeDetail')}}',
+				url: '{{asset('admin/product/storeImage')}}',
 				dataType:'json',
 				data: newPost,
 				async:false,
 				processData: false,
 				contentType: false,
 				success: function (response){
-					console.log(response);
-					toastr.success('Thêm thành công!');					
-					//detailTable.ajax.reload();
-				},
-				error: function (error) {
-					//500
+						console.log(response);
+						toastr.success('Thêm thành công!');								
+						// detailTable.ajax.reload();
+						// document.getElementById("add_new_detail").reset();
+						$('#DsAnh').html("");
+
+						response.map(function(value, index){
+							$('#Detail_image').append("<img class='suaAnh' id='anh-"+value.id+"' src='http://projectla02.com/storage/"+value.image+"'>");
+						});
+						// for(var i=0;i<response.temp.length;i++)
+						// {
+						// 	$('#Detail_image').append("<img class='suaAnh' id='anh-"+response.temp[i].id+"' src='http://projectla02.com/storage/"+response.temp[i].image+"'>");
+						// }
+					},
+					error: function (error) {
+						//500
+					}
+				})
+		});
+
+		$('#buttonDelete').on('click' ,function (){
+			$('.gly_remove').toggle(300);
+		});
+		$(document).on('click', '.gly_remove', function (e) {
+			var id = $(this).attr('xoaanh');
+			e.preventDefault();
+			swal({
+				dangerMode: true,
+				title: "Bạn có muốn xóa ảnh này không?",
+				icon: "warning",
+				buttons: {
+					cancel: 'Hủy',
+					confirm: 'Xóa'
 				}
 			})
-		});
+			.then((willDelete) => {
+				if (willDelete) {
+					$.ajax({
+						type: "delete",
+						url: '{{asset("")}}admin/product/deleteImage/' + id,
+						success: function(res)
+						{
+							toastr.success('Bài viết đã được xóa!', "");
+							$('#icon-' + id).remove();
+							$('#anh-' + id).remove();
+						},
+						error: function (){
+
+						}
+					});
+				}
+			});
+		})
 
 		$('#add_new').on('submit',function(e) {
 			e.preventDefault();
@@ -295,7 +460,7 @@
 					category_id: $('#category_id').val(),
 				},
 				success: function (response){
-					console.log(response);
+					//console.log(response);
 					$('#add').modal('hide');
 					$('#name').text(" ");
 					toastr.success('Thêm thành công!');
@@ -318,14 +483,20 @@
 					'</tr>';
 
 					$('#product').prepend(html);
+					document.getElementById("add_new").reset();
+					CKEDITOR.instances.description.setData(""),
 					userTable.ajax.reload();
 				},
 				error: function (error) {
-					//500
+					toastr.warning(error.responseJSON.errors.name);
+					toastr.warning(error.responseJSON.errors.description);
+					toastr.warning(error.responseJSON.errors.unit_price);
+					toastr.warning(error.responseJSON.errors.promotion_price);
 				}
 			})
 		});
-		$(document).on('click', '.btn-danger', function (e) {
+
+		$(document).on('click', '#deleteProduct', function (e) {
 			var id = $(this).attr('delete');
 			e.preventDefault();
 			swal({
@@ -354,6 +525,7 @@
 				}
 			});
 		})
+
 		$(document).on('click', '.btn-success', function() {
 			$('#editP').modal('show');
 
@@ -372,6 +544,7 @@
 				}
 			})
 		});
+
 		$('#edit_new').on('submit',function(e) {
 			e.preventDefault();
 			var id = $('#edit_id').val();
@@ -418,5 +591,4 @@
 		});
 	});
 </script>
-
 @endsection

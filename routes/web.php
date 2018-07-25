@@ -43,11 +43,15 @@ Route::middleware('admin.auth')->group(function (){
 			Route::get('index', 'Admin\ProductController@index')->name('product.index');
 			Route::get('anyData','Admin\ProductController@anyData')->name('product.anyData');
 			Route::get('showDetail/{id}','Admin\ProductController@showDetail')->name('product.showDetail');
-			Route::post('storeDetail','Admin\ProductController@storeDetail')->name('product.store');
+			Route::post('storeDetail','Admin\ProductController@storeDetail')->name('product.storeDetail');
+			Route::post('storeImage','Admin\ProductController@storeImage')->name('product.storeImage');
+			Route::get('showImage/{id}','Admin\ProductController@showImage')->name('product.showImage');
 			Route::post('store','Admin\ProductController@store')->name('product.store');
 			Route::get('edit/{id}','Admin\ProductController@edit')->name('product.edit');
 			Route::post('update/{id}','Admin\ProductController@update')->name('product.update');
 			Route::delete('delete/{id}','Admin\ProductController@destroy')->name('product.delete');
+			Route::delete('deleteDetail/{id}','Admin\ProductController@destroyDetailProduct')->name('product.deleteDetail');
+			Route::delete('deleteImage/{id}','Admin\ProductController@destroyImage')->name('product.deleteImage');
 		});
 		Route::prefix('product_detail')->group(function(){
 			Route::get('index', 'Admin\Product_detailController@index')->name('product_detail.index');
@@ -90,6 +94,15 @@ Route::middleware('admin.auth')->group(function (){
 			Route::post('update/{id}','Admin\SlideController@update')->name('slide.update');
 			Route::delete('delete/{id}','Admin\SlideController@destroy')->name('slide.delete');
 		});
+		Route::prefix('bill')->group(function(){
+			Route::get('index', 'Admin\BillController@index')->name('bill.index');
+			Route::get('anyData','Admin\BillController@anyData')->name('bill.anyData');
+			Route::get('showDetail/{id}','Admin\BillController@showDetail')->name('bill.showDetail');
+			Route::post('store','Admin\BillController@store')->name('bill.store');
+			Route::get('edit/{id}','Admin\BillController@edit')->name('bill.edit');
+			Route::post('update/{id}','Admin\BillController@update')->name('bill.update');
+			Route::delete('delete/{id}','Admin\BillController@destroy')->name('bill.delete');
+		});
 		Route::prefix('user')->group(function(){
 			Route::get('index', 'Admin\UserController@index')->name('user.index');
 			Route::get('anyData','Admin\UserController@anyData')->name('user.anyData');
@@ -102,5 +115,13 @@ Route::middleware('admin.auth')->group(function (){
 });
 
 Route::prefix('shop')->group(function (){
-	Route::get('index','Shop\ShopController@index')->name('blog.index');
+	Route::get('index','Shop\ShopController@index')->name('shop.index');
+	Route::get('modalDetail/{id}','Shop\ShopController@modalDetail')->name('shop.modalDetail');
+	Route::get('product/{id}','Shop\ShopController@product')->name('shop.product');
+	Route::post('postCart','Shop\ShopController@postCart')->name('shop.postCart');
+	Route::get('cart','Shop\ShopController@cart')->name('shop.cart');
+	Route::post('deleteDetail','Shop\ShopController@destroyDetail')->name('shop.deleteDetail');
+	Route::post('destroyCart','Shop\ShopController@destroyCart')->name('shop.destroyDetail');
+	Route::get('checkout','Shop\ShopController@getCheckout')->name('shop.getCheckout');
+	Route::post('postCheckout','Shop\ShopController@postCheckout')->name('shop.postCheckout');
 });

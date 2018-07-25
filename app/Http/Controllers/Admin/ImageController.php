@@ -38,7 +38,7 @@ class ImageController extends Controller
             
         })
         ->setRowClass(function ($image) {
-            return $image->id % 2 == 0 ? 'pink' : 'green';
+            return $image->id % 2 == 0 ? 'green' : 'green';
         })
         ->editColumn('image', function($image) {
             return '<img class="sizeImage" src="' .asset('') . 'storage/'. $image->image .'"/>';

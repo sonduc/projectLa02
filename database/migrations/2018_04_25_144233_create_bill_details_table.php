@@ -17,8 +17,11 @@ class CreateBillDetailsTable extends Migration
             $table->increments('id');
             $table->integer('quantity')->default(0);
             $table->float('unit_price')->default(0);
+            $table->integer('size')->default(0);
+            $table->text('color_name')->nullable();
+            $table->text('image')->nullable();
             $table->integer('bill_id')->index();
-            $table->integer('product_id')->index();
+            $table->integer('product_detail_id')->index();
             $table->timestamps();
         });
     }

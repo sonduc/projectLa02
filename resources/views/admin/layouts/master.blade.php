@@ -68,9 +68,63 @@
   float: left;
   width:150px;
   height: 100px;
+  border: 1px solid #80808052;
+  margin-left: 10px;
+  border-radius: 10px;
+}
+.inputImage{
+  padding: 0;
+  height: 24px;
+  width: 74px;
+}
+.buttonImage{
+  float: left;
+  margin-left: 2px;
+  border-radius: 5px;
+  font-size: 17px;
+  background: lightgray;
+  border-color: lightgray;
+}
+.suaAnh2{
+  float: left;
+  width:100px;
+  height: 50px;
+}
+#DsAnh{
+  float: left;
+  width: 100%;
+}
+#Detail_image{
+  clear: both;
+  float: left;
+  width: 100%;
+}
+#add_image_new{
+  float: left;
+  width:85%;
+  border-top: 1px solid rgba(0, 0, 0, 0.26);
+  padding-top: 5px;
+  margin-top: 25px;
+  margin-left: 6%;
+}
+.gly_remove{
+  float: left;
+  margin-left: -16px;
+  border: 1px solid;
+  background: #ff0000bf;
+  border-radius: 10px;
+  color: #00000069;
+  display: none;
+  cursor: pointer;
+}
+#buttonDelete{
+  margin-left: 5%;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
-  </style>
+</style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
   <div class="wrapper">
@@ -371,17 +425,17 @@
         </a>
       </li>
 
-      <li>
+      {{-- <li>
         <a href="{{ route('product_detail.index') }}">
           <i class="fa fa-book"></i> <span>Product_detail</span>
         </a>
-      </li>
+      </li> --}}
 
-      <li>
+      {{-- <li>
         <a href="{{ route('image.index') }}">
           <i class="fa fa-edit"></i> <span>Image</span>
         </a>
-      </li>
+      </li> --}}
       <li>
         <a href="{{ route('size.index') }}">
           <i class="fa fa-glide"></i> <span>Size</span>
@@ -400,6 +454,11 @@
       <li>
         <a href="{{ route('user.index') }}">
           <i class="fa fa-user"></i> <span>User</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ route('bill.index') }}">
+          <i class="fa fa-glide"></i> <span>Bill</span>
         </a>
       </li>
 

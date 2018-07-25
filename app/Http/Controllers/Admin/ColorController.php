@@ -33,7 +33,7 @@ class ColorController extends Controller
             
         })
         ->setRowClass(function ($color) {
-            return $color->id % 2 == 0 ? 'pink' : 'green';
+            return $color->id % 2 == 0 ? 'green' : 'green';
         })
         ->setRowId('tr-{{$id}}')
         ->make(true);
