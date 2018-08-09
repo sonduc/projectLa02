@@ -287,7 +287,6 @@
 				for (var i = 0; i < files.length; i++) {
 					newPost.append('image[]',files[i]);
 				}
-				//console.log($('#quantity').val());
 				newPost.append('quantity',$('#quantity').val());
 				newPost.append('color_id',$('#color_id').val());
 				newPost.append('size_id',$('#size_id').val());
